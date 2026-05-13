@@ -1,65 +1,115 @@
+"use client";
+import React, { useState, useEffect } from "react";
+
+import { ProfileHeader } from "@/components/profile-header";
+import { motion, AnimatePresence } from "framer-motion";
+import { LinkCard } from "@/components/link-card";
+import { SocialBar } from "@/components/social-bar";
+import { profileInfo, serviceLinks, socialLinks } from "@/data/links";
 import Image from "next/image";
 
 export default function Home() {
+  const images = [
+    "/images/kantor bws.jpeg",
+    "/images/metukul.png",
+    "/images/metukul2.png",
+    "/images/pice.png",
+  ];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="relative flex min-h-screen flex-col items-center">
+      {/* Subtle background pattern */}
+      <div className="fixed inset-0 -z-30 bg-white" />
+      <div className="absolute left-1/2 top-0 -z-10 h-[420px] w-full max-w-[560px] -translate-x-1/2 overflow-hidden">
+        <AnimatePresence>
+          <motion.div
+            key={images[currentImageIndex]}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0"
           >
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src={images[currentImageIndex]}
+              alt="Hero Carousel"
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </motion.div>
+        </AnimatePresence>
+        {/* Gradient fade to blend with background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white" />
+      </div>
+      <div
+        className="fixed inset-0 -z-20 opacity-50"
+        style={{
+          backgroundImage: `url('/images/bg-2.png')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 top-20 mx-auto w-[92%] max-w-[560px]">
+
+        {/* Profile section */}
+        <div className="">
+          <ProfileHeader profile={profileInfo} />
         </div>
-      </main>
-    </div>
+
+        {/* Spacer */}
+        <div className="h-4" />
+
+        {/* Main content area */}
+        <div className="flex w-full flex-col gap-2.5">
+          {/* Section: Link - Layanan */}
+          <section>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mb-6 text-center font-mono text-[12px] font-semibold text-[#555]"
+            >
+              Link - Layanan
+            </motion.p>
+            <div className="flex flex-col gap-2.5">
+              {serviceLinks.map((link, index) => (
+                <LinkCard key={link.id} link={link} index={index} />
+              ))}
+            </div>
+          </section>
+
+          {/* Section: Link - Sosial Media */}
+          <section>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mb-16 text-center font-mono text-[12px] font-semibold text-[#555]"
+            >
+              Link - Sosial Media
+            </motion.p>
+            <SocialBar socials={socialLinks} />
+          </section>
+
+          {/* Footer */}
+          <p className="mt-4 text-center font-mono text-[11px] text-black/30">
+            Hak Cipta © 2026 BWS Bangka Belitung
+          </p>
+        </div>
+      </div>
+    </main>
   );
 }
